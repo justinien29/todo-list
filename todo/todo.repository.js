@@ -33,7 +33,7 @@ const todoRepository = {
             client.query(
                 `INSERT INTO to_do 
                 (task, completed, listorder) 
-                VALUES ('${task}', false, ((SELECT COUNT(*) FROM to_do) + 1))
+                VALUES ($$${task}$$, false, ((SELECT COUNT(*) FROM to_do) + 1))
                 RETURNING id, task, completed, listorder;`, 
                 (err, res) => {
                     if(!err, res) resolve(res.rows[0]);
@@ -90,7 +90,7 @@ formatDataString = (itemData) => {
     if(itemData.listOrder) updateData.listOrder = itemData.listOrder;
     return Object.keys(updateData).map((key) => {
         let dataString = `${key} = `;
-        if(typeof updateData[key] == 'string') dataString+=`'${updateData[key]}'`;
+        if(typeof updateData[key] == 'string') dataString+=`$$${updateData[key]}$$`;
         else dataString+=`${updateData[key]}`;
         return dataString;
     }).join(",");
